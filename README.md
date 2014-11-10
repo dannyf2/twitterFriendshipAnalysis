@@ -1,6 +1,12 @@
 Twitter-Harvest
 ====================
 
+* Consumer Key (API Key) ffj33PQt2HZnliUnk4yigfDAJ
+* Consumer Secret (API Secret) 9VdoozAio9mcE3zQO70Q9TjRAVQTvwFLXWmGAkwU2EiDmn3Qh2 
+* Owner ID 203190168 
+* Access Token 203190168-V7Yr9LQ95w2WD7Pli5r1DyBsfboUXlQhxmhtrcAH 
+* Access Token Secret 7cgCzHJNwQFVUdL0zYIegqOimLNhgsPjAZVs9fhCZqVpP 
+
 Twitter-Harvest is a Twitter [User Timeline](https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline) tool that allows the user to download statuses (tweets) from user timelines as JSON objects and store them into a MongoDB database.  
 
 Developed on Python 2.7.x, you must also have Twitter Auth Credentials (detailed below).
