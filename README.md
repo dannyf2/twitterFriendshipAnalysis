@@ -1,6 +1,8 @@
 Twitter-Harvest
 ====================
 
+* python twitter-harvest.py --consumer-key ffj33PQt2HZnliUnk4yigfDAJ --consumer-secret 9VdoozAio9mcE3zQO70Q9TjRAVQTvwFLXWmGAkwU2EiDmn3Qh2 --access-token 203190168-V7Yr9LQ95w2WD7Pli5r1DyBsfboUXlQhxmhtrcAH --access-secret 7cgCzHJNwQFVUdL0zYIegqOimLNhgsPjAZVs9fhCZqVpP
+
 * Consumer Key (API Key) ffj33PQt2HZnliUnk4yigfDAJ
 * Consumer Secret (API Secret) 9VdoozAio9mcE3zQO70Q9TjRAVQTvwFLXWmGAkwU2EiDmn3Qh2 
 * Owner ID 203190168 
