@@ -89,6 +89,9 @@ def main():
     max_id = -1
     tweet_count = 0
 
+    targetList = []
+    relationshipList = []
+
     ### Begin Harvesting
     while True:
         auth = oauth_header(url, oauth_consumer, oauth_token)
@@ -117,25 +120,43 @@ def main():
             tweets = tweet_list[1:]
             if len(tweets) == 0:
                 print 'Finished Harvest!'
-                return
 
+				###add unique names found as well as relationships to file 
+                targetList.sort()
+                f = open('toCollect.txt', 'w')
+                for name in targetList:
+                    print name
+                    print >> f, name  # or f.write('...\n')
+                f.close()
+                f = open('collectionNames.txt', 'w')
+                for relation in relationshipList:
+                    print relation
+                    print >> f, relation  # or f.write('...\n')
+                f.close()
+                return
         for tweet in tweets:
             max_id = id_str = tweet['id_str']
             try:
                 if tweet_count == numtweets:
                     print 'Finished Harvest- hit numtweets!' 
-                    return 
-                if uri != None:
-                    db[user].update({'id_str':id_str},tweet,upsert = True)
-                else:
-                    print tweet['text']
+                    return
+                if len(tweet['entities']['user_mentions']) != 0:
+                    target = tweet['entities']['user_mentions'][0]['screen_name']
+                    if targetList.count(target) ==0:
+                        targetList.append(target)
+                    if relationshipList.count(user +"_" +target) ==0:
+                        relationshipList.append(user +"_"+target)
+                    if uri != None:
+                        db[user + '_' + target].update({'id_str':id_str},tweet,upsert = True)
+                    else:
+                        print tweet['entities']['user_mentions'][0]['screen_name']
                 tweet_count+=1
                 if verbose == True and uri != None:
                     print tweet['text']
             except Exception, err:
                 print 'Unexpected error encountered: %s' %(err)
                 return    
-        url = base_url + '&max_id=' + max_id
+        url = base_url + '&max_id=' + max_id 
 
 if __name__ == '__main__':
     try:
