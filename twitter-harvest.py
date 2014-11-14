@@ -1,4 +1,4 @@
-##############################################################################
+###############################################################################
 #
 # Copyright (c) 2013 ObjectLabs Corporation
 #
@@ -20,7 +20,26 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-################################################################################
+###############################################################################
+
+###############################################################################
+#	File: twitter-harvest.py
+#	Modification Authors: Daniel Fahey and Ian Smith
+#	For: CSE489 - Big Data Project, NMT Fall 2014
+#	Project Purpose:
+#		Collect tweets from given users and store any that are 'directed' in a
+#		mongoDB database. Directed tweets are those that tag other twitter users
+#		by using the @ symbol. 
+#		Then, analyze these tweets for various 'positive' and 'negative' words,
+#		creating a possible friendship score. The frequency of tweets also
+#		affects the score, so that people who only sent 1 or 2 tweets are not 
+#		considered best friends or worst enemies.
+#
+#	File Description:
+#		twitter-harvest.py is used to collect the directed tweets for specific 
+#		users and store them into a mongoDB database. Thanks to ObjectLabs for 
+#		the permission to use this software.
+###############################################################################
 
 __author__ = 'mongolab'
 
