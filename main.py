@@ -16,7 +16,7 @@
 #		python script in order to use the various features of this project.
 ###############################################################################
 
-import argparse, os 
+import argparse, os, sys
 
 # argument definitions
 parser = argparse.ArgumentParser(description = 'Wrapper for the various features of the Twitter Friendship Analysis program.')
@@ -48,7 +48,7 @@ if harv == True:
 		userarg = ' --user ' + user1
 	else:
 		print 'Must define user1 in order to harvest tweets. (use -u1 <username>)'
-		return
+		sys.exit()
 	if nodb == True:
 		mongoarg = ''
 	else:
@@ -60,7 +60,7 @@ if harv == True:
 	print 'Running twitter harvester for '+user1+'.'
 	#execute the python script
 	os.system('python twitter-harvest.py' + consumerkey + consumersec + acctoken + accsec + userarg + mongoarg)
-	#return
+	#sys.exit()
 
 # execute tweet-analyzer.py
 if rel == True:
@@ -69,17 +69,18 @@ if rel == True:
 		user1arg = ' -u1 ' + user1
 	else:
 		print 'Must define user1 in order to run analysis. (use -u1 <username>)'
-		return
+		sys.exit()
 	if user2 is not '':
 		user2arg = ' -u2 ' + user2
 		print 'Calculating the relationship between '+user1+' and '+user2+'.'
 	else:
 		user2arg = ''
 		print 'Calculating the relationships for '+user1+'.'
+	mongoarg = ' --db mongodb://localhost:27017/testdb'
 	#execute the python script
-	os.system('python tweet-analyzer.py' + user1arg + user2arg)
-	return
+	os.system('python tweet-analyzer.py' + user1arg + user2arg + mongoarg)
+	sys.exit()
 	
 if harv==False and rel==False:
 	print 'Use -th for twitter harvesting or -r for calculating relationships. Use -h for more info.'
-	return
+	sys.exit()
