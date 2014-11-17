@@ -45,7 +45,7 @@ consumersec = ' --consumer-secret 9VdoozAio9mcE3zQO70Q9TjRAVQTvwFLXWmGAkwU2EiDmn
 acctoken = ' --access-token 203190168-V7Yr9LQ95w2WD7Pli5r1DyBsfboUXlQhxmhtrcAH'
 accsec = ' --access-secret 7cgCzHJNwQFVUdL0zYIegqOimLNhgsPjAZVs9fhCZqVpP'
 
-if seed == True:
+#if seed == True:
 	
 # execute twitter-harvest.py
 if harv == True:
@@ -64,26 +64,14 @@ if harv == True:
 		limitarg = ''
 	print 'Running twitter harvester for '+user1+'.'
 	#execute the python script
-	os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + userarg + mongoarg)
+	os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + userarg + mongoarg + " --until-date jan112014")
 	#sys.exit()
 
 # execute tweet-analyzer.py
 if rel == True:
-	#construct the arguments
-	if user1 is not '':
-		user1arg = ' -u1 ' + user1
-	else:
-		print 'Must define user1 in order to run analysis. (use -u1 <username>)'
-		sys.exit()
-	if user2 is not '':
-		user2arg = ' -u2 ' + user2
-		print 'Calculating the relationship between '+user1+' and '+user2+'.'
-	else:
-		user2arg = ''
-		print 'Calculating the relationships for '+user1+'.'
 	mongoarg = ' --db mongodb://localhost:27017/testdb'
 	#execute the python script
-	os.system('python tweet-analyzer.py' + user1arg + user2arg + mongoarg)
+	os.system('python tweet-analyzer.py' + mongoarg)
 	sys.exit()
 	
 if harv==False and rel==False:
