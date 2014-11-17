@@ -181,7 +181,7 @@ def main():
                         db[user + '_' + target].update({'id_str':id_str},tweet,upsert = True)
                     else:
                         print tweet['entities']['user_mentions'][x]['screen_name']
-                        print tweet['created_at']
+                        #print tweet['created_at']
                 tweet_count+=1
                 if verbose == True and uri != None:
                     print tweet['text']
