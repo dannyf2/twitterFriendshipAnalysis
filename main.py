@@ -27,7 +27,7 @@ parser.add_argument('-u2', '--user2', help = 'choose twitter user 2', default = 
 parser.add_argument('-nodb', '--nodatabase', help = 'stops the twitter harvest from using the database. Use for debugging purposes.', action = 'store_true')
 parser.add_argument('-max', '--maxtweets', help = 'sets the maximum limit on the number of tweets to be harvested.', default = 0);
 parser.add_argument('-s', '--seed', help = 'sets flag indicating the -u1 parameter is the seed user.', action = 'store_true');
-parser.add_argument('-round', '--number-of-rounds', help = 'choose number of rounds to run', default = '2')
+parser.add_argument('-round', '--number-of-rounds', help = 'choose number of rounds to run', default = '1')
 
 # grab the arguments
 args = parser.parse_args()
@@ -67,14 +67,15 @@ if seed == True:
 		limitarg = ''
 	print 'Running twitter harvester for '+user1+'.'
 	#execute the python script
-	os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + userarg + mongoarg + ' --until-date mar112012')
+	os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + userarg + mongoarg + ' --until-date mar112014')
 	roundNum=0
 	while roundNum < numRounds:
 		os.system('cp toCollect.txt ' + str(roundNum) + 'Round.txt')
+		os.system('rm toCollect.txt ')
 		f = open(str(roundNum) + 'Round.txt', 'r')
 		for nextUser in f:
-			print nextUser
-			#os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + nextUser + mongoarg + ' --until-date MAR112012')
+			nextUser = nextUser.replace('\n','')
+			os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + ' --user ' +nextUser + mongoarg + ' --until-date MAR112014')
 		roundNum = roundNum +1
 
 	
