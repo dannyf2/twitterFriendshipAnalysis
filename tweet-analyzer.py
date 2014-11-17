@@ -17,17 +17,13 @@
 #		on the content of the tweets.
 ###############################################################################
 
-import pymongo, argparse, sys
+import pymongo, argparse, sys, textblob
 
 # Construct the arguments for this script.
 parser = argparse.ArgumentParser(description = 'Analyze the tweets for a given user or user pair and calculate a "friendship" score.')
-parser.add_argument('-u1', '--user1', help = 'Choose twitter user 1. This is required.', required = True)
-parser.add_argument('-u2', '--user2', help = 'Choose twitter user 2', default = '')
 parser.add_argument('-d', '--db', help = 'MongoDB URI. This is required.', required = True)
 
 args = parser.parse_args()
-user1 = args.user1
-user2 = args.user2
 dburi = args.db
 
 # Attempt to connect to the database.
@@ -40,15 +36,32 @@ uri_parts = pymongo.uri_parser.parse_uri(dburi)
 db = conn[uri_parts['database']]
 
 # Process for a user pair
+from textblob import TextBlob
+from textblob.sentiments import NaiveBayesAnalyzer
+# Create the Bayes analyzer
+ana = NaiveBayesAnalyzer()
+todo = open('collectionNames.txt','r')
+todo = 
+# analyze the tweets
 if user2 is not '':
-	collection = user1+'_'+user2
-	print 'Examining tweets from the '+collection+' collection.'
-	tweets = db.collection.find().toArray()
-	size = db[collection].find().size()
-	i = 0
-	while i < size:
-		print 'Tweet = "'+tweet[i]+'".'
+	collection = db[user1+'_'+user2]
+	print 'Examining tweets from the '+user1+'_'+user2+' collection.'
+	tweets = collection.find()
+	fval = 0
+	counter = 0
+	for tweet in tweets:
+		#print 'Tweet = "'+tweet["text"]+'".'
+		blob = TextBlob(tweet["text"], analyzer=ana)
+		if blob.sentiment.classification is 'pos':
+			tval = 0.5
+		else:
+			tval = -0.5
+		fval += tval + (blob.sentiment.p_pos - blob.sentiment.p_neg)
+		counter += 1
+		print tweet["text"]
 
+	fval = fval * counter / 10
+	print 'Score = ' + str(fval) + ', out of ' + str(counter) + ' tweets'
 # Process for a single user	
 else:
 	#TODO
