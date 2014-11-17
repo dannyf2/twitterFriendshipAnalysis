@@ -54,12 +54,12 @@ if harv == True:
 	else:
 		mongoarg = ' --db mongodb://localhost:27017/testdb'
 	if maxtweets is not 0:
-		limitarg = ' --numtweets ' + str(abs(int(maxtweets)))
+		limitarg = ' --numtweets ' + maxtweets
 	else:
 		limitarg = ''
 	print 'Running twitter harvester for '+user1+'.'
 	#execute the python script
-	os.system('python twitter-harvest.py' + consumerkey + consumersec + acctoken + accsec + userarg + mongoarg)
+	os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + userarg + mongoarg)
 	#sys.exit()
 
 # execute tweet-analyzer.py
