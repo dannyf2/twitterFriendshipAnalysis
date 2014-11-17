@@ -26,7 +26,8 @@ parser.add_argument('-u1', '--user1', help = 'choose twitter user 1', default = 
 parser.add_argument('-u2', '--user2', help = 'choose twitter user 2', default = '')
 parser.add_argument('-nodb', '--nodatabase', help = 'stops the twitter harvest from using the database. Use for debugging purposes.', action = 'store_true')
 parser.add_argument('-max', '--maxtweets', help = 'sets the maximum limit on the number of tweets to be harvested.', default = 0);
-parser.add_argument('-s', '--seed', help = 'sets flag indicating the -u1 parameter is the seed user.', default = 0);
+parser.add_argument('-s', '--seed', help = 'sets flag indicating the -u1 parameter is the seed user.', action = 'store_true');
+parser.add_argument('-round', '--number-of-rounds', help = 'choose number of rounds to run', default = '2')
 
 # grab the arguments
 args = parser.parse_args()
@@ -37,6 +38,9 @@ user2 = args.user2
 nodb = args.nodatabase
 maxtweets = args.maxtweets
 seed = args.seed
+numRoundsString = args.number_of_rounds
+
+numRounds = int(numRoundsString)
 
 # global key values
 #construct the arguments
@@ -46,6 +50,32 @@ acctoken = ' --access-token 203190168-V7Yr9LQ95w2WD7Pli5r1DyBsfboUXlQhxmhtrcAH'
 accsec = ' --access-secret 7cgCzHJNwQFVUdL0zYIegqOimLNhgsPjAZVs9fhCZqVpP'
 
 if seed == True:
+	os.system('rm collectionNames.txt')
+	os.system('rm toCollect.txt')
+	if user1 is not '':
+		userarg = ' --user ' + user1
+	else:
+		print 'Must define user1 in order to harvest tweets. (use -u1 <username>)'
+		sys.exit()
+	if nodb == True:
+		mongoarg = ''
+	else:
+		mongoarg = ' --db mongodb://localhost:27017/testdb'
+	if maxtweets is not 0:
+		limitarg = ' --numtweets ' + maxtweets
+	else:
+		limitarg = ''
+	print 'Running twitter harvester for '+user1+'.'
+	#execute the python script
+	os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + userarg + mongoarg + ' --until-date mar112012')
+	roundNum=0
+	while roundNum < numRounds:
+		os.system('cp toCollect.txt ' + str(roundNum) + 'Round.txt')
+		f = open(str(roundNum) + 'Round.txt', 'r')
+		for nextUser in f:
+			print nextUser
+			#os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + nextUser + mongoarg + ' --until-date MAR112012')
+		roundNum = roundNum +1
 	
 # execute twitter-harvest.py
 if harv == True:

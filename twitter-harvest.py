@@ -149,11 +149,11 @@ def main():
 
 				###add unique names found as well as relationships to file 
                 targetList.sort()
-                f = open('toCollect.txt', 'w')
+                f = open('toCollect.txt', 'a+')
                 for name in targetList:
                     print >> f, name  # or f.write('...\n')
                 f.close()
-                f = open('collectionNames.txt', 'a')
+                f = open('collectionNames.txt', 'a+')
                 for relation in relationshipList:
                     print >> f, relation  # or f.write('...\n')
                 f.close()
@@ -162,14 +162,32 @@ def main():
             max_id = id_str = tweet['id_str']
             try:
                 if tweet_count == numtweets:
-                    print 'Finished Harvest- hit numtweets!' 
-                    return
+                   print 'Finished Harvest- hit numtweets!' 
+                   targetList.sort()
+                   f = open('toCollect.txt', 'a+')
+                   for name in targetList:
+                       print >> f, name  # or f.write('...\n')
+                   f.close()
+                   f = open('collectionNames.txt', 'a+')
+                   for relation in relationshipList:
+                       print >> f, relation  # or f.write('...\n')
+                   f.close()
+                   return
                 dateCreated = tweet['created_at']
                 monthCreated = dateCreated[4:7]
                 dayCreated = dateCreated[8:10]
                 yearCreated = dateCreated[-4:]
                 if int(yearCreated) < int(endYear):
                    print 'Finished Harvest- hit year end'
+                   targetList.sort()
+                   f = open('toCollect.txt', 'a+')
+                   for name in targetList:
+                       print >> f, name  # or f.write('...\n')
+                   f.close()
+                   f = open('collectionNames.txt', 'a+')
+                   for relation in relationshipList:
+                       print >> f, relation  # or f.write('...\n')
+                   f.close()
                    return 
                 for x in range(0, len(tweet['entities']['user_mentions'])):
                     target = tweet['entities']['user_mentions'][x]['screen_name']
