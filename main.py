@@ -26,6 +26,7 @@ parser.add_argument('-u1', '--user1', help = 'choose twitter user 1', default = 
 parser.add_argument('-u2', '--user2', help = 'choose twitter user 2', default = '')
 parser.add_argument('-nodb', '--nodatabase', help = 'stops the twitter harvest from using the database. Use for debugging purposes.', action = 'store_true')
 parser.add_argument('-max', '--maxtweets', help = 'sets the maximum limit on the number of tweets to be harvested.', default = 0);
+parser.add_argument('-s', '--seed', help = 'sets flag indicating the -u1 parameter is the seed user.', default = 0);
 
 # grab the arguments
 args = parser.parse_args()
@@ -35,15 +36,19 @@ user1 = args.user1
 user2 = args.user2
 nodb = args.nodatabase
 maxtweets = args.maxtweets
+seed = args.seed
 
+# global key values
+#construct the arguments
+consumerkey = ' --consumer-key ffj33PQt2HZnliUnk4yigfDAJ'
+consumersec = ' --consumer-secret 9VdoozAio9mcE3zQO70Q9TjRAVQTvwFLXWmGAkwU2EiDmn3Qh2'
+acctoken = ' --access-token 203190168-V7Yr9LQ95w2WD7Pli5r1DyBsfboUXlQhxmhtrcAH'
+accsec = ' --access-secret 7cgCzHJNwQFVUdL0zYIegqOimLNhgsPjAZVs9fhCZqVpP'
 
+if seed == True:
+	
 # execute twitter-harvest.py
 if harv == True:
-	#construct the arguments
-	consumerkey = ' --consumer-key ffj33PQt2HZnliUnk4yigfDAJ'
-	consumersec = ' --consumer-secret 9VdoozAio9mcE3zQO70Q9TjRAVQTvwFLXWmGAkwU2EiDmn3Qh2'
-	acctoken = ' --access-token 203190168-V7Yr9LQ95w2WD7Pli5r1DyBsfboUXlQhxmhtrcAH'
-	accsec = ' --access-secret 7cgCzHJNwQFVUdL0zYIegqOimLNhgsPjAZVs9fhCZqVpP'
 	if user1 is not '':
 		userarg = ' --user ' + user1
 	else:
