@@ -86,9 +86,6 @@ def main():
        endMon = endDate[:3]
        endDay = endDate[3:5]
        endYear = endDate[5:9]
-       print endMon
-       print endDay
-       print endYear
 
     ### Build Signature
     CONSUMER_KEY = args.consumer_key
@@ -154,12 +151,10 @@ def main():
                 targetList.sort()
                 f = open('toCollect.txt', 'w')
                 for name in targetList:
-                    print name
                     print >> f, name  # or f.write('...\n')
                 f.close()
                 f = open('collectionNames.txt', 'a')
                 for relation in relationshipList:
-                    print relation
                     print >> f, relation  # or f.write('...\n')
                 f.close()
                 return
@@ -173,7 +168,9 @@ def main():
                 monthCreated = dateCreated[4:7]
                 dayCreated = dateCreated[8:10]
                 yearCreated = dateCreated[-4:]
-                
+                if int(yearCreated) < int(endYear):
+                   print 'Finished Harvest- hit year end'
+                   return 
                 for x in range(0, len(tweet['entities']['user_mentions'])):
                     target = tweet['entities']['user_mentions'][x]['screen_name']
                     if targetList.count(target) ==0:
@@ -184,6 +181,7 @@ def main():
                         db[user + '_' + target].update({'id_str':id_str},tweet,upsert = True)
                     else:
                         print tweet['entities']['user_mentions'][x]['screen_name']
+                        print tweet['created_at']
                 tweet_count+=1
                 if verbose == True and uri != None:
                     print tweet['text']
