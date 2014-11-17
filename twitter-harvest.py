@@ -72,7 +72,7 @@ def main():
     parser.add_argument('--consumer-secret', help = 'Consumer Secret from your Twitter App OAuth settings', required = True)
     parser.add_argument('--access-token', help = 'Access Token from your Twitter App OAuth settings', required = True)
     parser.add_argument('--access-secret', help = 'Access Token Secret from your Twitter App Dev Credentials', required = True)
-    parser.add_argument('--until-date', help = 'note date to harvest until in mmmddyyyy format were month is months 3 letter equivalent', required = False)
+    parser.add_argument('--until-date', help = 'note date to harvest until in mmmddyyyy format were month is months 3 letter equivalent', required = False, default = 'jan112014')
 
     ### Fields for query
     args = parser.parse_args()
