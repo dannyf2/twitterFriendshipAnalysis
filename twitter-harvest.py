@@ -72,6 +72,7 @@ def main():
     parser.add_argument('--consumer-secret', help = 'Consumer Secret from your Twitter App OAuth settings', required = True)
     parser.add_argument('--access-token', help = 'Access Token from your Twitter App OAuth settings', required = True)
     parser.add_argument('--access-secret', help = 'Access Token Secret from your Twitter App Dev Credentials', required = True)
+    parser.add_argument('--until-date', help = 'note date to harvest until in mmmddyyyy format were month is months 3 letter equivalent', required = False)
 
     ### Fields for query
     args = parser.parse_args()
@@ -79,6 +80,15 @@ def main():
     numtweets = args.numtweets
     verbose = args.verbose
     retweet = args.retweet
+    endDate = args.until_date
+
+    if endDate != '':
+       endMon = endDate[:3]
+       endDay = endDate[3:5]
+       endYear = endDate[5:9]
+       print endMon
+       print endDay
+       print endYear
 
     ### Build Signature
     CONSUMER_KEY = args.consumer_key
@@ -147,7 +157,7 @@ def main():
                     print name
                     print >> f, name  # or f.write('...\n')
                 f.close()
-                f = open('collectionNames.txt', 'w')
+                f = open('collectionNames.txt', 'a')
                 for relation in relationshipList:
                     print relation
                     print >> f, relation  # or f.write('...\n')
@@ -159,16 +169,21 @@ def main():
                 if tweet_count == numtweets:
                     print 'Finished Harvest- hit numtweets!' 
                     return
-                if len(tweet['entities']['user_mentions']) != 0:
-                    target = tweet['entities']['user_mentions'][0]['screen_name']
+                dateCreated = tweet['created_at']
+                monthCreated = dateCreated[4:7]
+                dayCreated = dateCreated[8:10]
+                yearCreated = dateCreated[-4:]
+                
+                for x in range(0, len(tweet['entities']['user_mentions'])):
+                    target = tweet['entities']['user_mentions'][x]['screen_name']
                     if targetList.count(target) ==0:
                         targetList.append(target)
-                    if relationshipList.count(user +"_" +target) ==0:
-                        relationshipList.append(user +"_"+target)
+                    if relationshipList.count(user +"," +target) ==0:
+                        relationshipList.append(user +","+target)
                     if uri != None:
                         db[user + '_' + target].update({'id_str':id_str},tweet,upsert = True)
                     else:
-                        print tweet['entities']['user_mentions'][0]['screen_name']
+                        print tweet['entities']['user_mentions'][x]['screen_name']
                 tweet_count+=1
                 if verbose == True and uri != None:
                     print tweet['text']
