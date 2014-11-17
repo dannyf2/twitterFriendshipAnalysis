@@ -17,17 +17,13 @@
 #		on the content of the tweets.
 ###############################################################################
 
-import pymongo, argparse, sys
+import pymongo, argparse, sys, textblob
 
 # Construct the arguments for this script.
 parser = argparse.ArgumentParser(description = 'Analyze the tweets for a given user or user pair and calculate a "friendship" score.')
-parser.add_argument('-u1', '--user1', help = 'Choose twitter user 1. This is required.', required = True)
-parser.add_argument('-u2', '--user2', help = 'Choose twitter user 2', default = '')
 parser.add_argument('-d', '--db', help = 'MongoDB URI. This is required.', required = True)
 
 args = parser.parse_args()
-user1 = args.user1
-user2 = args.user2
 dburi = args.db
 
 # Attempt to connect to the database.
@@ -40,16 +36,40 @@ uri_parts = pymongo.uri_parser.parse_uri(dburi)
 db = conn[uri_parts['database']]
 
 # Process for a user pair
-if user2 is not '':
-	collection = user1+'_'+user2
-	print 'Examining tweets from the '+collection+' collection.'
-	tweets = db.collection.find().toArray()
-	size = db[collection].find().size()
-	i = 0
-	while i < size:
-		print 'Tweet = "'+tweet[i]+'".'
+from textblob import TextBlob
+from textblob.sentiments import NaiveBayesAnalyzer
+# Create the Bayes analyzer
+ana = NaiveBayesAnalyzer()
+# open the file with all of the functions
+todo = open('collectionNames.txt','r')
+# loop line by line and calculate scores for each
+valList = []
+colstring = todo.readline()
+while len(colstring) is not 0:
+	colstring = colstring.replace('\n','')
+	users = colstring.split(',')
+	# analyze the tweets
+	collection = db[users[0]+'_'+users[1]]
+	print 'Examining '+users[0]+' and '+users[1]+'.'
+	tweets = collection.find()
+	fval = 0
+	counter = 0
+	for tweet in tweets:
+		#print 'Tweet = "'+tweet["text"]+'".'
+		blob = TextBlob(tweet["text"], analyzer=ana)
+		if blob.sentiment.classification is 'pos':
+			tval = 0.5
+		else:
+			tval = -0.5
+		fval += tval + (blob.sentiment.p_pos - blob.sentiment.p_neg)
+		counter += 1
+		#print tweet["text"]
 
-# Process for a single user	
-else:
-	#TODO
-	sys.exit()
+	fval = fval * counter
+	valList.append([users[0],users[1],fval])
+	colstring = todo.readline()
+	
+# push everything to a file
+outfile = open('scores.txt','w')
+for val in valList:
+	print >> outfile, str(val[0]) + "," + str(val[1]) + "," + str(val[2])
