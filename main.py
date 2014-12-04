@@ -69,6 +69,7 @@ if seed == True:
 	#execute the python script
 	os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + userarg + mongoarg + ' --until-date mar112014')
 	roundNum=0
+	import time
 	while roundNum < numRounds:
 		os.system('cp toCollect.txt ' + str(roundNum) + 'Round.txt')
 		os.system('rm toCollect.txt ')
@@ -76,6 +77,7 @@ if seed == True:
 		for nextUser in f:
 			nextUser = nextUser.replace('\n','')
 			os.system('python twitter-harvest.py' + consumerkey + consumersec + limitarg + acctoken + accsec + ' --user ' +nextUser + mongoarg + ' --until-date MAR112014')
+			time.sleep(30)
 		roundNum = roundNum +1
 
 	

@@ -104,6 +104,7 @@ def main():
         try: 
             conn = pymongo.MongoClient(uri)
             print 'Harvesting...'
+            print user
         except:
             print 'Error: Unable to connect to DB. Check --db arg'
             return
@@ -177,6 +178,12 @@ def main():
                 monthCreated = dateCreated[4:7]
                 dayCreated = dateCreated[8:10]
                 yearCreated = dateCreated[-4:]
+                
+                if (int(tweet['user']['followers_count'])/(int(tweet['user']['friends_count'])+1)) >= 50:
+                   print 'Harvest Ended- Too many followers'
+                   print 'Followers:' + str(tweet['user']['followers_count'])
+                   print 'Following:' + str(tweet['user']['friends_count'])
+                   return
                 if int(yearCreated) < int(endYear):
                    print 'Finished Harvest- hit year end'
                    targetList.sort()
