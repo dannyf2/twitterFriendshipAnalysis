@@ -16,7 +16,7 @@ t = open('testingSet.txt','w')
 counter = 0
 
 for line in f:
-	if counter is not 0:
+	if counter > 0:
 		words = line.split(',')
 		if int(words[1]) is 1:
 			sen = 'pos'
@@ -42,11 +42,11 @@ for line in f:
 		newl = newl.lstrip()
 		#print(newl)
 		#print newline[0] + newline[1] + newline[2]
-		if counter >= 500:
+		if counter >= 20:
 			w.write(newl)
 		else:
 			t.write(newl)
 	counter += 1
-	if counter > 5000:
+	if counter > 100:
 		break
 print (str(counter))
