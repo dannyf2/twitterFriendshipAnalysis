@@ -17,7 +17,7 @@
 #		on the content of the tweets.
 ###############################################################################
 
-import pymongo, argparse, sys, textblob
+import pymongo, argparse, sys, textblob, pickle, os
 
 # Construct the arguments for this script.
 parser = argparse.ArgumentParser(description = 'Analyze the tweets for a given user or user pair and calculate a "friendship" score.')
@@ -37,14 +37,29 @@ db = conn[uri_parts['database']]
 
 # Process for a user pair
 from textblob import TextBlob
-from textblob.sentiments import NaiveBayesAnalyzer
-# Create the Bayes analyzer
-ana = NaiveBayesAnalyzer()
+from textblob.classifiers import NaiveBayesClassifier
+
+if os.path.isfile('anafile') is True:
+	anafile = open('anafile','rb')
+	ana = pickle.load(anafile)
+	anafile.close()
+else:
+	# Create the Bayes analyzer
+	print 'Loading naive bayes classifier, this may take a few moments...'
+	ana = NaiveBayesClassifier(open('trainingSet.txt','r'),format="csv")
+	anafile = open('anafile','wb')
+	pickle.dump(ana,anafile)
+	anafile.close()
+	
+print 'Getting accuracy...'
+print 'accuracy = ' + str(ana.accuracy(open('testingSet.txt','r'),format="csv"))
+	
 # open the file with all of the functions
 todo = open('collectionNames.txt','r')
 # loop line by line and calculate scores for each
 valList = []
 colstring = todo.readline()
+
 while len(colstring) is not 0:
 	colstring = colstring.replace('\n','')
 	users = colstring.split(',')
@@ -53,22 +68,40 @@ while len(colstring) is not 0:
 	print 'Examining '+users[0]+' and '+users[1]+'.'
 	tweets = collection.find()
 	fval = 0
-	counter = 0
 	for tweet in tweets:
 		#print 'Tweet = "'+tweet["text"]+'".'
-		blob = TextBlob(tweet["text"], analyzer=ana)
-		if blob.sentiment.classification is 'pos':
-			tval = 0.5
+		text = tweet["text"]
+		#remove all of the @handles
+		s = text.find('@')
+		while s is not -1:
+			e = text.find(' ',s)
+			if e is -1:
+				r = text[s:]
+			else:
+				r = text[s:e]
+			text = text.replace(r,'')
+			s = text.find('@')
+		#end while
+		#remove the hashtags
+		text = text.replace('#','')
+		text = text.lstrip()
+		prob = ana.prob_classify(text)
+		print ana.classify(text)
+		if prob.max() is 'pos':
+			val = 1
 		else:
-			tval = -0.5
-		fval += tval + (blob.sentiment.p_pos - blob.sentiment.p_neg)
-		counter += 1
-		#print tweet["text"]
-
-	fval = fval * counter
+			val = -1
+		#val = (round(prob.prob("pos"),2) - round(prob.prob("neg"),2))
+		fval += val
+		#print text
+		#print str(val)
+	
+	#end for
+	print 'final = '+str(fval)
+	#fval = fval * counter
 	valList.append([users[0],users[1],fval])
 	colstring = todo.readline()
-	
+#end while
 # push everything to a file
 outfile = open('scores.txt','w')
 for val in valList:
